@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# creates openvpn server and client files
+# Author Athanasios Zorbas
 
 writeServerConfig() {
 
