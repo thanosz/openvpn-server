@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# creates openvpn server and client files
-# Author Athanasios Zorbas
+VPN_NET="10.9.0.0"
 
 writeServerConfig() {
 
@@ -25,7 +24,7 @@ client-cert-not-required
 #verify-client-cert none
 username-as-common-name
 
-server 10.8.0.0 255.255.255.0
+server $VPN_NET 255.255.255.0
 ifconfig-pool-persist ipp.txt
 push "redirect-gateway autolocal"
 #push "redirect-gateway def1 bypass-dhcp"
@@ -114,10 +113,10 @@ echo Running OpenVPN server...
 [[ -d /dev/net ]] || mkdir -p /dev/net
 [[ -a /dev/net/tun ]] || mknod /dev/net/tun c 10 200 
 
-if ! iptables -C FORWARD -s 10.8.0.0/24 -j ACCEPT 2>/dev/null; then
-	iptables -A FORWARD -s 10.8.0.0/24 -j ACCEPT
-	iptables -A FORWARD -d 10.8.0.0/24 -j ACCEPT
-	iptables -t nat -A POSTROUTING -s 10.8.0.0/24  -o `ip r | grep default | awk '{print $5}'` -j MASQUERADE
+if ! iptables -C FORWARD -s $VPN_NET/24 -j ACCEPT 2>/dev/null; then
+	iptables -A FORWARD -s $VPN_NET/24 -j ACCEPT
+	iptables -A FORWARD -d $VPN_NET/24 -j ACCEPT
+	iptables -t nat -A POSTROUTING -s $VPN_NET/24  -o eth0 -j MASQUERADE
 fi
 
 openvpn --config /etc/openvpn/server/config.ovpn
