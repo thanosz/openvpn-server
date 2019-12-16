@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VPN_NET="10.9.0.0"
+VPN_NET=10.9.0.0
 
 writeServerConfig() {
 
@@ -113,10 +113,6 @@ echo Running OpenVPN server...
 [[ -d /dev/net ]] || mkdir -p /dev/net
 [[ -a /dev/net/tun ]] || mknod /dev/net/tun c 10 200 
 
-if ! iptables -C FORWARD -s $VPN_NET/24 -j ACCEPT 2>/dev/null; then
-	iptables -A FORWARD -s $VPN_NET/24 -j ACCEPT
-	iptables -A FORWARD -d $VPN_NET/24 -j ACCEPT
-	iptables -t nat -A POSTROUTING -s $VPN_NET/24  -o eth0 -j MASQUERADE
-fi
+iptables -t nat -C POSTROUTING -s $VPN_NET/24  -o eth0 -j MASQUERADE || iptables -t nat -A POSTROUTING -s $VPN_NET/24  -o eth0 -j MASQUERADE
 
 openvpn --config /etc/openvpn/server/config.ovpn
