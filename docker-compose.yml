@@ -15,3 +15,7 @@ services:
       - 1194:1194/tcp
     volumes:
       - openvpn_data:/etc/openvpn
+    restart: unless-stopped
+
+volumes:
+  openvpn_data:
