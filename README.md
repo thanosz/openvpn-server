@@ -14,7 +14,7 @@ How to use
 =====
 The container needs to run with **NET_ADMIN** capabilities on the the **host** network. It is best to use volumes so that the server certificates are not regenerated every time a new container is created.
 
-    docker run -it -v openvpn_data:/etc/openvpn -p 1194:1194 --cap-add=NET_ADMIN thanosz/openvpn
+    docker run -it -v openvpn_data:/etc/openvpn -p 1194:1194 --cap-add=NET_ADMIN thanosz/openvpn-server
 
 
 The client configuration will be generated under /var/lib/docker/volumes/openvpn_data/_data/client/client.ovpn. You need to change the SERVER_NAME and PORT according to your configuration. Normally SERVER_NAME would be the external DNS name of your router and PORT would be the external port on your router which has to be redirected to the docker host at the default openvpn port 1194. 
