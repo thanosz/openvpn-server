@@ -1,0 +1,17 @@
+version: "3"
+services:
+  openvpn-server:
+    build:
+      context: .
+    cap_add:
+      - NET_ADMIN
+    container_name: openvpn-server
+    entrypoint:
+      - /bin/sh
+      - -c
+      - /root/entrypoint.sh
+    image: thanosz/openvpn-server
+    ports:
+      - 1194:1194/tcp
+    volumes:
+      - openvpn_data:/etc/openvpn

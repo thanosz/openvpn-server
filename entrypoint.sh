@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VPN_NET=10.9.0.0
+VPN_NET=10.89.0.0
 
 writeServerConfig() {
 
