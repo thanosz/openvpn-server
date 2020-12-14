@@ -12,7 +12,7 @@ On first run the certificates and all configuration will be generated. A user **
 
 How to use
 =====
-The container needs to run with **NET_ADMIN** capabilities on the the **host** network. It is best to use volumes so that the server certificates are not regenerated every time a new container is created.
+The container needs to run with **NET_ADMIN** capability. It is best to use volumes so that the server certificates are not regenerated every time a new container is created.
 
     docker run -it -v openvpn_data:/etc/openvpn -p 1194:1194 --cap-add=NET_ADMIN thanosz/openvpn-server
 
