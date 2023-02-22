@@ -4,7 +4,11 @@ VPN_NET=10.89.0.0
 
 writeServerConfig() {
 
-	[[ -f /etc/openvpn/server/config.ovpn ]] && return
+	if [[ -f /etc/openvpn/server/config.ovpn ]]; then
+		sed -i 's/client-cert-not-required//' /etc/openvpn/server/config.ovpn
+		sed -i 's/^#verify-client/verify-client' /etc/openvpn/server/config.ovpn
+		return
+	fi
 	echo First run...
 	mkdir -p /etc/openvpn/server
 	echo Generating server configuration...
@@ -20,8 +24,7 @@ dh /etc/openvpn/easy-rsa/keys/dh2048.pem
 cipher AES-256-CBC
 
 plugin /usr/lib/openvpn/openvpn-plugin-auth-pam.so login
-client-cert-not-required
-#verify-client-cert none
+verify-client-cert none
 username-as-common-name
 
 server $VPN_NET 255.255.255.0

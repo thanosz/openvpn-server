@@ -1,4 +1,4 @@
-FROM debian:jessie
+FROM debian:bullseye
 RUN apt-get update
 #RUN apt-get upgrade
 RUN apt-get -y install openvpn easy-rsa iptables
