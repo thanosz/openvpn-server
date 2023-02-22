@@ -6,7 +6,7 @@ writeServerConfig() {
 
 	if [[ -f /etc/openvpn/server/config.ovpn ]]; then
 		sed -i 's/client-cert-not-required//' /etc/openvpn/server/config.ovpn
-		sed -i 's/^#verify-client/verify-client' /etc/openvpn/server/config.ovpn
+		sed -i 's/^#verify-client/verify-client/' /etc/openvpn/server/config.ovpn
 		return
 	fi
 	echo First run...
