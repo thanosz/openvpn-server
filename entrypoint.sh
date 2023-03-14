@@ -17,10 +17,10 @@ port 1194
 proto tcp
 dev tun0
 
-ca /etc/openvpn/easy-rsa/keys/ca.crt
-cert /etc/openvpn/easy-rsa/keys/$(hostname).crt
-key /etc/openvpn/easy-rsa/keys/$(hostname).key
-dh /etc/openvpn/easy-rsa/keys/dh2048.pem
+ca /etc/openvpn/easy-rsa/pki/ca.crt
+cert /etc/openvpn/easy-rsa/pki/issued/$(hostname).crt
+key /etc/openvpn/easy-rsa/pki/private/$(hostname).key
+dh /etc/openvpn/easy-rsa/pki/dh.pem
 cipher AES-256-CBC
 
 plugin /usr/lib/openvpn/openvpn-plugin-auth-pam.so login
@@ -65,11 +65,14 @@ cipher AES-256-CBC
 auth SHA1
 comp-lzo
 verb 3
+# only route specific networks
+# route-nopull
+# route 10.0.0.0 255.0.0.0
 EOF
-
+a26ad94bc2ac
 echo >> /etc/openvpn/client/client.ovpn
 echo '<ca>' >> /etc/openvpn/client/client.ovpn
-cat /etc/openvpn/easy-rsa/keys/ca.crt >> /etc/openvpn/client/client.ovpn
+cat /etc/openvpn/easy-rsa/pki/ca.crt >> /etc/openvpn/client/client.ovpn
 echo '</ca>' >> /etc/openvpn/client/client.ovpn
 echo You can find the client configuration in container volume or under /etc/openvpn/client
 echo "You need to modify the client configuration to reflect your setup (server name, port)"
@@ -94,16 +97,14 @@ addVpnUser() {
 
 
 generateCerts() {
-	[[ -f /etc/openvpn/easy-rsa/keys/dh2048.pem ]] && return
+	[[ -f /etc/openvpn/easy-rsa/pki/dh.pem ]] && return
 	echo Generating certificates...
 	cp -r /usr/share/easy-rsa /etc/openvpn/
 	cd /etc/openvpn/easy-rsa
-	source ./vars
-	./clean-all
-	./pkitool --initca
-	./pkitool --server $(hostname)
-	./build-dh
-
+    ./easyrsa init-pki
+    EASYRSA_BATCH=1 ./easyrsa build-ca nopass
+    EASYRSA_BATCH=1 ./easyrsa build-server-full $(hostname) nopass
+    EASYRSA_BATCH=1 ./easyrsa gen-dh
 }
 
 echo Starting...
