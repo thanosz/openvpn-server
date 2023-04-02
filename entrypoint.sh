@@ -69,7 +69,6 @@ verb 3
 # route-nopull
 # route 10.0.0.0 255.0.0.0
 EOF
-a26ad94bc2ac
 echo >> /etc/openvpn/client/client.ovpn
 echo '<ca>' >> /etc/openvpn/client/client.ovpn
 cat /etc/openvpn/easy-rsa/pki/ca.crt >> /etc/openvpn/client/client.ovpn

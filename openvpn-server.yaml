@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: openvpn-server
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openvpn-server
+  namespace: openvpn-server
+  labels:
+    app: openvpn-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openvpn-server
+  template:
+    metadata:
+      labels:
+        app: openvpn-server
+    spec:
+      containers:
+      - image: docker.io/thanosz/openvpn-server
+        imagePullPolicy: Always
+        name: openvpn-server
+        ports:
+        - containerPort: 1194
+        volumeMounts:
+        - name: openvpn-data
+          mountPath: /etc/openvpn
+        securityContext: 
+          capabilities:
+            add:
+              - NET_ADMIN
+      volumes:
+      - name: openvpn-data
+        persistentVolumeClaim:
+          claimName: claim-openvpn-server
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: claim-openvpn-server
+  namespace: openvpn-server
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 10Mi
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: openvpn-server
+  namespace: openvpn-server
+spec:
+  type: NodePort
+  selector:
+    app: openvpn-server
+  ports:
+    - protocol: TCP
+      port: 1194
+      targetPort: 1194
+      nodePort: 30001
+
