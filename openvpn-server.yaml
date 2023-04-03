@@ -25,6 +25,9 @@ spec:
       - image: docker.io/thanosz/openvpn-server
         imagePullPolicy: Always
         name: openvpn-server
+        resources:
+          limits:
+            memory: "512Mi"
         ports:
         - containerPort: 1194
         volumeMounts:

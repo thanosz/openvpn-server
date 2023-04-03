@@ -1,7 +1,7 @@
 FROM debian:bullseye
-RUN apt-get update
-#RUN apt-get upgrade
-RUN apt-get -y --force-yes install openvpn easy-rsa iptables
+RUN apt update && \
+	apt install -y openvpn easy-rsa iptables && \
+	apt clean
 COPY entrypoint.sh /root/entrypoint.sh
 RUN chmod +x /root/entrypoint.sh
 ENTRYPOINT /root/entrypoint.sh
