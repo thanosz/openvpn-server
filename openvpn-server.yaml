@@ -70,6 +70,5 @@ spec:
   ports:
     - protocol: TCP
       port: 1194
-      targetPort: 1194
-      nodePort: 30001
+      nodePort: 31194
 
