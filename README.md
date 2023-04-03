@@ -4,13 +4,23 @@ This is a simple opevpn-server. It is intended for home users needing to run an 
 
 It will create the configuration needed for the openvpn server to run and also the client configuration needed for the clients to connect.
 
-For authorization there are no client certificates generated. The authorization is user-based. This is a compromise between security and ease-of-use.
+For authorization there are no client certificates generated. The authorization is user-based. A user with a random password will be generated on initialization. This is a compromise between security and ease-of-use. Only one user is supported at this time.
+
+This was developed with Raspberry-pi and later k3s. The container images are hosted in dockerhub for the following platforms. The images should run on all raspberry pis, x86_64 and arm64 (aarch64) architecures
+
+```
+linux/arm/v6
+linux/arm/v7
+linux/arm64/v8
+linux/amd64
+```
+
 
 Details
 =====
 On first run the certificates and all configuration will be generated. A user **vpn_user** will be created and a random password will be assigned.
 
-How to use
+How to use - docker
 =====
 The container needs to run with **NET_ADMIN** capability. It is best to use volumes so that the server certificates are not regenerated every time a new container is created.
 
@@ -22,3 +32,8 @@ The client configuration will be generated under /var/lib/docker/volumes/openvpn
 Import client.opvn to the openvpn client application
 
 The /var/lib/docker/volumes/openvpn_data/_data/client/auth.txt contains the password for the vpn_user which you need to put when prompted in the openvpn client application.
+
+How to use - k3s
+=====
+Apply the openvpn-server.yaml taking care to modify the StorageClass used (by default is using rancher's local-path). You can then exec into the pod to get the credentials under /etc/openvpn/client/auth.txt
+
