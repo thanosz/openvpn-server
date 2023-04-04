@@ -67,11 +67,10 @@ metadata:
   name: openvpn-server
   namespace: openvpn-server
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: openvpn-server
   ports:
     - protocol: TCP
       port: 1194
-      nodePort: 31194
 

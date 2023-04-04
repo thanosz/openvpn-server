@@ -35,5 +35,5 @@ The /var/lib/docker/volumes/openvpn_data/_data/client/auth.txt contains the pass
 
 How to use - k3s
 =====
-Apply the openvpn-server.yaml taking care to modify the StorageClass used (by default is using rancher's local-path). You can then exec into the pod to get the credentials under /etc/openvpn/client/auth.txt
+Apply the openvpn-server.yaml taking care to modify the StorageClass used (by default is using rancher's local-path). You can then exec into the pod to get the credentials and a sample openvpn client config under ```/etc/openvpn/client/```
 
