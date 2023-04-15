@@ -118,4 +118,4 @@ echo Running OpenVPN server...
 
 iptables -t nat -C POSTROUTING -s $VPN_NET/24  -o eth0 -j MASQUERADE || iptables -t nat -A POSTROUTING -s $VPN_NET/24  -o eth0 -j MASQUERADE
 
-openvpn --config /etc/openvpn/server/config.ovpn
+exec openvpn --config /etc/openvpn/server/config.ovpn
