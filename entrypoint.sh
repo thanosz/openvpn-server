@@ -101,8 +101,8 @@ generateCerts() {
 	cp -r /usr/share/easy-rsa /etc/openvpn/
 	cd /etc/openvpn/easy-rsa
     ./easyrsa init-pki
-    EASYRSA_BATCH=1 ./easyrsa build-ca nopass
-    EASYRSA_BATCH=1 ./easyrsa build-server-full $(hostname) nopass
+    EASYRSA_BATCH=1 ./easyrsa --days=4000 build-ca nopass
+    EASYRSA_BATCH=1 ./easyrsa --days=4000 build-server-full $(hostname) nopass
     EASYRSA_BATCH=1 ./easyrsa gen-dh
 }
 
