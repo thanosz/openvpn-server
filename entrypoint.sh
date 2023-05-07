@@ -38,10 +38,10 @@ keepalive 10 120
 comp-lzo
 persist-key
 persist-tun
-status /var/log/openvpn-status.log
+status /var/log/openvpn/openvpn-status.log
 verb 3
 
-log-append /var/log/openvpn
+#log-append /var/log/openvpn/openvpn.log
 status /tmp/vpn.status 10
 EOF
 }

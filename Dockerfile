@@ -4,6 +4,7 @@ RUN apt update && \
 	apt clean
 COPY entrypoint.sh /root/entrypoint.sh
 RUN chmod +x /root/entrypoint.sh
+VOLUME /etc/openvpn
 ENTRYPOINT ["/root/entrypoint.sh"]
 
 
