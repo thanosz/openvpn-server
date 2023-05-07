@@ -5,7 +5,7 @@ RUN apt update && \
 COPY entrypoint.sh /root/entrypoint.sh
 RUN chmod +x /root/entrypoint.sh
 VOLUME /etc/openvpn
-PORT 1194
+EXPOSE 1194
 ENTRYPOINT ["/root/entrypoint.sh"]
 
 
