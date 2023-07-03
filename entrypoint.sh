@@ -86,7 +86,7 @@ addVpnUser() {
 		else
  			PASSWORD=$(date | md5sum | head -c 10)
 		fi
-		echo Setting password $PASSWORD for vpn_user 
+		echo Setting password $(echo ${PASSWORD} | base64) for vpn_user 
 		echo "vpn_user:${PASSWORD}" | chpasswd
 		echo vpn_user > /etc/openvpn/client/auth.txt
 		echo $PASSWORD >> /etc/openvpn/client/auth.txt
