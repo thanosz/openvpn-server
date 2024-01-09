@@ -40,7 +40,7 @@ persist-key
 persist-tun
 status /var/log/openvpn/openvpn-status.log
 verb 3
-
+duplicate-cn
 #log-append /var/log/openvpn/openvpn.log
 status /tmp/vpn.status 10
 EOF
@@ -94,7 +94,6 @@ addVpnUser() {
 	fi
 }
 
-
 generateCerts() {
 	[[ -f /etc/openvpn/easy-rsa/pki/dh.pem ]] && return
 	echo Generating certificates...
@@ -106,6 +105,7 @@ generateCerts() {
     EASYRSA_BATCH=1 ./easyrsa gen-dh
 }
 
+
 echo Starting...
 generateCerts
 writeServerConfig
@@ -116,6 +116,6 @@ echo Running OpenVPN server...
 [[ -d /dev/net ]] || mkdir -p /dev/net
 [[ -a /dev/net/tun ]] || mknod /dev/net/tun c 10 200 
 
-iptables -t nat -C POSTROUTING -s $VPN_NET/24  -o eth0 -j MASQUERADE || iptables -t nat -A POSTROUTING -s $VPN_NET/24  -o eth0 -j MASQUERADE
+iptables -t nat -C POSTROUTING -s $VPN_NET/24  -o eth+ -j MASQUERADE || iptables -t nat -A POSTROUTING -s $VPN_NET/24  -o eth+ -j MASQUERADE
 
 exec openvpn --config /etc/openvpn/server/config.ovpn
