@@ -1,6 +1,12 @@
 #!/bin/bash
 
-VPN_NET=10.89.0.0
+if [[ $PROTO == "udp" ]]; then 
+        DEV=tun0
+        VPN_NET="10.88.0.0"
+else
+        DEV=tun1
+        VPN_NET="10.89.0.0"
+fi
 
 writeServerConfig() {
 
@@ -14,7 +20,6 @@ writeServerConfig() {
 	echo Generating server configuration...
 	cat > /etc/openvpn/server/config.ovpn << EOF
 port 1194
-proto tcp
 dev tun0
 
 ca /etc/openvpn/easy-rsa/pki/ca.crt
@@ -107,9 +112,13 @@ generateCerts() {
 
 
 echo Starting...
-generateCerts
-writeServerConfig
-writeClientConfig
+if [[ $CONTAINER_TYPE == "INIT" ]]; then
+        generateCerts
+        writeServerConfig
+        writeClientConfig
+        exit 0
+fi
+
 addVpnUser
 
 echo Running OpenVPN server...
@@ -118,4 +127,5 @@ echo Running OpenVPN server...
 
 iptables -t nat -C POSTROUTING -s $VPN_NET/24  -o eth+ -j MASQUERADE || iptables -t nat -A POSTROUTING -s $VPN_NET/24  -o eth+ -j MASQUERADE
 
-exec openvpn --config /etc/openvpn/server/config.ovpn
+[[ $PROTO == "udp" ]] && DEV=tun0 || DEV=tun1
+exec openvpn --config /etc/openvpn/server/config.ovpn --proto $PROTO --dev $DEV --server $VPN_NET 255.255.255.0

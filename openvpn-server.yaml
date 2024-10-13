@@ -21,10 +21,44 @@ spec:
       labels:
         app: openvpn-server
     spec:
+      initContainers:
+      - image: docker.io/thanosz/openvpn-server
+        imagePullPolicy: Always
+        name: init
+        env:
+         - name: PROTO
+           value: "udp"
+         - name: CONTAINER_TYPE
+           value: "INIT"          
+        volumeMounts:
+        - name: openvpn-data
+          mountPath: /etc/openvpn
       containers:
       - image: docker.io/thanosz/openvpn-server
         imagePullPolicy: Always
-        name: openvpn-server
+        name: openvpn-server-tcp
+        env:
+         - name: PROTO
+           value: "tcp-server"
+        resources:
+          limits:
+            memory: "512Mi"
+        ports:
+        - containerPort: 1194
+        volumeMounts:
+        - name: openvpn-data
+          mountPath: /etc/openvpn
+        securityContext: 
+          capabilities:
+            add:
+              - NET_ADMIN
+              - MKNOD
+      - image: docker.io/thanosz/openvpn-server
+        imagePullPolicy: Always
+        name: openvpn-server-udp
+        env:
+         - name: PROTO
+           value: "udp"
         resources:
           limits:
             memory: "512Mi"
@@ -74,4 +108,8 @@ spec:
   ports:
     - protocol: TCP
       port: 1194
+      name: openvpn-tcp
+    - protocol: UDP
+      port: 1194
+      name: openvpn-udp
 
