@@ -21,25 +21,13 @@ spec:
       labels:
         app: openvpn-server
     spec:
-      initContainers:
-      - image: docker.io/thanosz/openvpn-server
-        imagePullPolicy: Always
-        name: init
-        env:
-         - name: PROTO
-           value: "udp"
-         - name: CONTAINER_TYPE
-           value: "INIT"          
-        volumeMounts:
-        - name: openvpn-data
-          mountPath: /etc/openvpn
       containers:
       - image: docker.io/thanosz/openvpn-server
         imagePullPolicy: Always
         name: openvpn-server-tcp
         env:
          - name: PROTO
-           value: "tcp-server"
+           value: "tcp"
         resources:
           limits:
             memory: "512Mi"

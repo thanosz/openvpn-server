@@ -1,12 +1,20 @@
 #!/bin/bash
 
-if [[ $PROTO == "udp" ]]; then 
-        DEV=tun0
-        VPN_NET="10.88.0.0"
-else
-        DEV=tun1
-        VPN_NET="10.89.0.0"
-fi
+decideProtocol() {
+
+        if [[ $PROTO == "udp" ]]; then 
+                DEV=tun0
+                VPN_NET="10.88.0.0"
+        elif [[ $PROTO == "tcp" ]]; then
+                PROTO=tcp-server
+                DEV=tun1
+                VPN_NET="10.89.0.0"
+        else
+                echo "Using default protocol TCP"
+                PROTO=tcp-server
+                VPN_NET="10.89.0.0"
+        fi
+}
 
 writeServerConfig() {
 
@@ -78,8 +86,15 @@ echo >> /etc/openvpn/client/client.ovpn
 echo '<ca>' >> /etc/openvpn/client/client.ovpn
 cat /etc/openvpn/easy-rsa/pki/ca.crt >> /etc/openvpn/client/client.ovpn
 echo '</ca>' >> /etc/openvpn/client/client.ovpn
-echo You can find the client configuration in container volume or under /etc/openvpn/client
-echo "You need to modify the client configuration to reflect your setup (server name, port)"
+}
+
+
+printClientConfig() {
+        echo You can find the client configuration in container volume or under /etc/openvpn/client
+        echo "You need to modify the client configuration to reflect your setup (server name, port)"
+        echo "===================================================================================== "
+        cat /etc/openvpn/client/client.ovpn
+        echo "===================================================================================== "
 }
 
 addVpnUser() {
@@ -112,16 +127,16 @@ generateCerts() {
 
 
 echo Starting...
-if [[ $CONTAINER_TYPE == "INIT" ]]; then
-        generateCerts
-        writeServerConfig
-        writeClientConfig
-        exit 0
-fi
 
+decideProtocol
+generateCerts
+writeServerConfig
+writeClientConfig
+printClientConfig
 addVpnUser
 
-echo Running OpenVPN server...
+
+echo "Running OpenVPN server, ==> $PROTO..."
 [[ -d /dev/net ]] || mkdir -p /dev/net
 [[ -a /dev/net/tun ]] || mknod /dev/net/tun c 10 200 
 
