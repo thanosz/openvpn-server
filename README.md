@@ -9,9 +9,8 @@ For authorization there are no client certificates generated. The authorization 
 This was developed with Raspberry-pi and later k3s. The container images are hosted in dockerhub for the following platforms. The images should run on all raspberry pis, x86_64 and arm64 (aarch64) architecures
 
 ```
-linux/arm/v6
 linux/arm/v7
-linux/arm64/v8
+linux/arm64
 linux/amd64
 ```
 
