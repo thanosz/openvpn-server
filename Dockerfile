@@ -1,4 +1,4 @@
-FROM debian:bullseye
+FROM debian:bookworm
 RUN apt update && \
 	apt install -y openvpn easy-rsa iptables && \
 	apt clean
