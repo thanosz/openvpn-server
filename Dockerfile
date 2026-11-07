@@ -1,4 +1,5 @@
 FROM debian:bookworm
+ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update && \
 	apt install -y openvpn easy-rsa iptables && \
 	apt clean
